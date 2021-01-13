@@ -347,8 +347,8 @@ app.delete('/api/paciente/:_id', async (req, res) => {
 })
 
 
-app.delete('/api/citas', async (req, res) => {
-    Citas.remove({ identificacion: req.body.identificacion }, function (err) {
+app.delete('/api/cita', async (req, res) => {
+    Citas.remove({ identificacion: req.body }, function (err) {
         if (!err) {
             res.send('ELIMINADO')
         } else {
