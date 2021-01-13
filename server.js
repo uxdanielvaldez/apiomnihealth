@@ -348,7 +348,7 @@ app.delete('/api/paciente/:_id', async (req, res) => {
 
 
 app.delete('/api/cita/:nombre', async (req, res) => {
-    Citas.remove({ nombre: req.params.nombre }, function (err) {
+    Citas.findOneAndDelete({ nombre: req.params.nombre }, function (err) {
         if (!err) {
             res.send('ELIMINADO')
         } else {
