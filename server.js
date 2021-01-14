@@ -436,7 +436,7 @@ app.post('/api/register-meeting', async (req, res) => {
 })
 app.options('*', cors())
 
-app.delete('/api/user-meeting/:id', async (req, res) => {
+app.delete('/api/user-meeting/:_id', async (req, res) => {
     UserMeeting.findByIdAndRemove({ _id: req.params._id })
         .then(function (usermeeting) {
         res.send(usermeeting)
