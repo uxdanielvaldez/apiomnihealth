@@ -434,7 +434,14 @@ app.post('/api/register-meeting', async (req, res) => {
         status: 200
     })
 })
+app.options('*', cors())
 
+app.delete('/api/user-meeting/:id', async (req, res) => {
+    UserMeeting.findByIdAndRemove({ _id: req.params._id })
+        .then(function (usermeeting) {
+        res.send(usermeeting)
+    })
+})
 
 app.delete('/api/cita/:nombre', async (req, res) => {
     Citas.findOneAndDelete({ nombre: req.params.nombre }, function (err) {
