@@ -12,6 +12,7 @@ const params = require('params')
 const User = require('./models/user');
 const Citas = require('./models/cita');
 const Pacientes = require('./models/paciente')
+const UserMeeting = require('./models/usermeeting')
 
 const JWT_SECRET = 'ssafarq34aksbdfoib2o3ufoqwbqwrfo*)&(ˆ*&&ˆ**&ˆ*kjnskhfkjsfaisdf'
 
@@ -343,6 +344,94 @@ app.delete('/api/paciente/:_id', async (req, res) => {
     Pacientes.findByIdAndRemove({ _id:req.params._id })
         .then(function (paciente) {
         res.send(paciente)
+    })
+})
+
+
+app.get('/api/user-meeting', async (req, res) => {
+    UserMeeting.find({}, async (err, userMeeting) => {
+        if (err) {
+            res.send('HA OCURRIDO UN ERROR');
+            next()
+        }
+        res.json(userMeeting);
+    })
+})
+
+app.post('/api/register-meeting', async (req, res) => {
+    console.log(req.body)
+    const { username, password: plainTextPassword, nombre, apellido, estado } = req.body
+
+        let transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'consultasomnihealth@gmail.com',
+                pass: 'uLTRAml*z'
+            }
+        });
+
+        let mailOptions = {
+            from: 'consultasomnihealth@gmail.com',
+            to: username,
+            subject: 'Acceso API - OmniHealt',
+            text: `Se ha realizado el registro de su acceso al API OmniHealth. Estas son sus credenciales, Usuario: ${username}, Contraseña: ${plainTextPassword}`
+        }
+
+        transporter.sendMail(mailOptions, function (err, data) {
+            if (err) {
+                console.log('ERROR AL ENVIAR CORREO', err)
+            }
+            else {
+                console.log('EMAIL SEND')
+            }
+        })
+
+    if (!username || typeof username !== 'string') {
+        return res.json({ status: 'error', error: 'Invalid username' })
+    }
+
+    if (!plainTextPassword || typeof plainTextPassword !== 'string') {
+        return res.json({ status: 'error', error: 'Invalid password' })
+    }
+
+    if (plainTextPassword.length < 6) {
+        return res.json({ status: 'error', error: 'Password too small. Should be atleast 6 characters' })
+    }
+
+    function makeid(length) {
+        var result           = '';
+        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for ( var i = 0; i < length; i++ ) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
+    
+    console.log(makeid(50))
+
+    const password = await bcrypt.hash(plainTextPassword, 10)
+
+    try {
+        const response = await UserMeeting.create({
+            username,
+            password,
+            nombre,
+            apellido,
+            estado
+        })
+        console.log('User created:', response)
+    } catch (error) {
+        if (error.code === 11000) {
+            return res.json({ status: 'error', error: 'Username already in use' })
+        }
+        throw error
+        
+        
+    }
+
+    res.json({
+        status: 200
     })
 })
 
