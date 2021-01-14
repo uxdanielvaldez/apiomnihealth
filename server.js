@@ -442,6 +442,7 @@ app.delete('/api/user-meeting/:_id', async (req, res) => {
         res.send(usermeeting)
     })
 })
+app.options('*', cors())
 
 app.delete('/api/cita/:nombre', async (req, res) => {
     Citas.findOneAndDelete({ nombre: req.params.nombre }, function (err) {
