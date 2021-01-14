@@ -39,7 +39,7 @@ const UserSchema = new mongoose.Schema({
         type: String
     },
     estado: {
-        type: Boolean
+        type: String
     },
     pacientes: [{
         type: mongoose.Schema.Types.ObjectId,
