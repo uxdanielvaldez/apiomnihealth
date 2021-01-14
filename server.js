@@ -360,7 +360,7 @@ app.get('/api/user-meeting', async (req, res) => {
 
 app.post('/api/register-meeting', async (req, res) => {
     console.log(req.body)
-    const { username, password: plainTextPassword, nombre, apellido, estado } = req.body
+    const { username, password: plainTextPassword, nombre, apellido, estado, referencia } = req.body
 
         let transporter = nodemailer.createTransport({
             service: 'gmail',

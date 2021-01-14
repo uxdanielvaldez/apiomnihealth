@@ -19,7 +19,7 @@ const UserMeetingSchema = new mongoose.Schema({
         required: true
     },
     estado: {
-        type: Boolean
+        type: String
     },
     referencia: {
         type: String
