@@ -168,7 +168,7 @@ app.post('/api/login', async (req, res) => {
             id: user._id,
             username: user.username
         }, JWT_SECRET)
-        return res.json({ status: 200, message: 'Inicio de sesión exitoso', jwt: token, username: user.username, user: user.nombre + ' ' + user.apellido, rol: user.rol, cedula: user.cedula, id: user._id })
+        return res.json({ status: 200, message: 'Inicio de sesión exitoso', jwt: token, username: user.username, user: user.nombre + ' ' + user.apellido, rol: user.rol, cedula: user.cedula, id: user._id, estado: user.estado })
         
     }
 
