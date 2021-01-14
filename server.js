@@ -333,7 +333,7 @@ app.get('/api/citas/', async (req, res) => {
 // PETICIONES DELETE
 
 app.delete('/api/user/:_id', async (req, res) => {
-    User.findByIdAndRemove({ _id: req.params.id })
+    User.findByIdAndRemove({ _id: req.params._id })
         .then(function (user) {
         res.send(user)
     })
