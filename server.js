@@ -204,7 +204,7 @@ app.post('/api/login-meeting', async (req, res) => {
             sala: user.sala,
             meeting: 'https://consulta.omnihealth.com.do/'+makeid(50)
         }, JWT_SECRET)
-        return res.json({ status: 200, jwt: token, meeting: 'https://consulta.omnihealth.com.do/'+sala })
+        return res.json({ status: 200, jwt: token, meeting: 'https://consulta.omnihealth.com.do/'+makeid(50) })
     }
 
     res.json({ status: 400, error: 'Usuario o Contraseña Incorrecto' })
