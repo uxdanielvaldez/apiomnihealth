@@ -52,7 +52,7 @@ app.post('/api/register', async (req, res) => {
             from: 'consultasomnihealth@gmail.com',
             to: username,
             subject: 'Acceso API - OmniHealt',
-            text: `
+            html: `
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 
@@ -787,7 +787,7 @@ app.post('/api/cita/:_id', async (req, res) => {
             from: 'consultasomnihealth@gmail.com',
             to: paciente.correoElectronico,
             subject: 'Cita Agendada - OmniHealt',
-            text: `
+            html: `
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 
