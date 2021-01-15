@@ -7,12 +7,12 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
 const morgan = require('morgan')
-const params = require('params')
 
 const User = require('./models/user');
 const Citas = require('./models/cita');
 const Pacientes = require('./models/paciente')
 const UserMeeting = require('./models/usermeeting')
+const Calendar = require('./models/calendar')
 
 const JWT_SECRET = 'ssafarq34aksbdfoib2o3ufoqwbqwrfo*)&(ˆ*&&ˆ**&ˆ*kjnskhfkjsfaisdf'
 
@@ -384,7 +384,7 @@ app.post('/api/register', async (req, res) => {
                                             <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%;">
                                                 <tr>
                                                     <td align="center" bgcolor="#407BFF" role="presentation" style="border:none;border-radius:100px;cursor:auto;padding:15px 25px 15px 25px;background:#407BFF;" valign="middle">
-                                                        <a href="#" style="background:#407BFF;color:#ffffff;font-family:Open Sans, Helvetica, Arial, sans-serif;font-size:13px;font-weight:normal;line-height:120%;Margin:0;text-decoration:none;text-transform:none;" target="_blank">
+                                                        <a href="https://portal.omnihealth.com.do" style="background:#407BFF;color:#ffffff;font-family:Open Sans, Helvetica, Arial, sans-serif;font-size:13px;font-weight:normal;line-height:120%;Margin:0;text-decoration:none;text-transform:none;" target="_blank">
                                                             <b style="font-weight:700"><b style="font-weight:700">Empezar</b></b>
                                                         </a>
                                                     </td>
@@ -1200,6 +1200,30 @@ app.post('/api/login-meeting', async (req, res) => {
 })
 
 
+app.post('/api/calendar', async (req, res) => {
+    const { title, start, end } = req.body;
+
+    try {
+        const response = await Calendar.create({
+            title,
+            start,
+            end
+        })
+
+        res.json({
+            status: 200,
+            response
+        })
+        console.log(response)
+    } catch (err) {
+        return res.json({
+            status: 400,
+            message: err
+        }),
+        console.log('ERROR AL REGISTRAR CALENDARIO', err)
+    }
+})
+
 
 app.post('/api/paciente', async (req, res) => {
     const { identificacion, nombre, apellido, fechaDeNacimiento, genero, correoElectronico, telefono, direccion, user_creation } = req.body;
@@ -1834,6 +1858,11 @@ app.get('/api/users', async (req, res) => {
 app.get('/api/citas/', async (req, res) => {
     const citas = await Citas.find(req.query)
     res.send(citas)
+})
+
+app.get('/api/calendar', async (req, res) => {
+    const calendar = await Calendar.find(req.query)
+    res.send(calendar)
 })
 
 
