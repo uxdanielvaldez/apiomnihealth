@@ -175,6 +175,48 @@ app.post('/api/login', async (req, res) => {
     res.json({ status: 400, error: 'Usuario o Contraseña Incorrecto' })
 })
 
+
+app.post('/api/login-meeting', async (req, res) => {
+    const { username, password, sala } = req.body
+
+    function makeid(length) {
+        var result           = '';
+        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for ( var i = 0; i < length; i++ ) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
+    
+    console.log(makeid(50))
+
+    const user = await UserMeeting.findOne({ username }).lean()
+
+    if (!user) {
+        return res.json({ status: 'error', error: 'Invelid username/password' })
+    }
+
+    if(estado)
+
+    if (await bcrypt.compare(password, user.password)) {
+        const token = jwt.sign({
+            id: user._id,
+            username: user.username,
+            sala: user.sala,
+            meeting: 'https://consulta.omnihealth.com.do/'+makeid(50)
+        }, JWT_SECRET)
+        return res.json({ status: 200, jwt: token, meeting: 'https://consulta.omnihealth.com.do/'+sala })
+    }
+
+    res.json({ status: 400, error: 'Usuario o Contraseña Incorrecto' })
+
+
+
+})
+
+
+
 app.post('/api/paciente', async (req, res) => {
     const { identificacion, nombre, apellido, fechaDeNacimiento, genero, correoElectronico, telefono, direccion, user_creation } = req.body;
 
