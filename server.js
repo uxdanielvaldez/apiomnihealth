@@ -387,6 +387,11 @@ app.delete('/api/paciente/:_id', async (req, res) => {
     })
 })
 
+app.delete('/api/cita/paciente', async (req, res) => {
+    Citas.find({ identificacion: req.body.identificacion }).remove().exec()
+    res.send('Eliminado')
+})
+
 
 app.get('/api/user-meeting', async (req, res) => {
     UserMeeting.find({}, async (err, userMeeting) => {
