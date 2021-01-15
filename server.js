@@ -583,7 +583,7 @@ app.post('/api/register', async (req, res) => {
 })
 
 app.post('/api/change-password', async (req, res) => {
-    const { token, newpassword: plainTextPassword } = req.body
+    const { username, token, newpassword: plainTextPassword } = req.body
 
         let transporter = nodemailer.createTransport({
             service: 'gmail',
