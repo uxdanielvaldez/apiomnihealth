@@ -388,8 +388,11 @@ app.delete('/api/paciente/:_id', async (req, res) => {
 })
 
 app.delete('/api/cita/paciente', async (req, res) => {
-    Citas.find({ identificacion: req.body.identificacion }).remove().exec()
-    res.send('Eliminado')
+    Citas.deleteOne({ identificacion: req.body.identificacion }).then(function(){ 
+    console.log("Data deleted"); // Success 
+    }).catch(function(error){ 
+        console.log(error); // Failure 
+    }); 
 })
 
 
