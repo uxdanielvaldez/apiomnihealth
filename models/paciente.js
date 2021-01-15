@@ -11,7 +11,7 @@ const PacienteSchema = new mongoose.Schema({
         type: String
     },
     fechaDeNacimiento: {
-        type: Date
+        type: String
     },
     genero: {
         type: String
