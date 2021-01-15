@@ -2217,7 +2217,7 @@ app.post('/api/register-meeting', async (req, res) => {
                                                 Datos de accesos al api
                                                 <ul>
                                                     <li><b>Usuario:<b> ${username}</li>
-                          <li><b>Usuario:<b> ${plainTextPassword}</li>
+                          <li><b>Password:<b> ${plainTextPassword}</li>
                       </ul>
                       </div>
                     </td>
@@ -2226,8 +2226,7 @@ app.post('/api/register-meeting', async (req, res) => {
                     <td align="center" vertical-align="middle" style="font-size:0px;padding:10px 25px;padding-top:20px;padding-bottom:20px;word-break:break-word;">
                       <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%;">
                         <tr>
-                          <td align="center" bgcolor="#407BFF" role="presentation" style="border:none;border-radius:100px;cursor:auto;padding:15px 25px 15px 25px;background:#407BFF;" valign="middle">
-                                        </td>
+
                                     </tr>
                                 </table>
                         </td>
