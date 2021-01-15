@@ -1201,13 +1201,14 @@ app.post('/api/login-meeting', async (req, res) => {
 
 
 app.post('/api/calendar', async (req, res) => {
-    const { title, start, end } = req.body;
+    const { title, start, end, user_creation } = req.body;
 
     try {
         const response = await Calendar.create({
             title,
             start,
-            end
+            end,
+            user_creation
         })
 
         res.json({
