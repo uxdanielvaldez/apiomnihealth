@@ -194,10 +194,8 @@ app.post('/api/login-meeting', async (req, res) => {
     const user = await UserMeeting.findOne({ username }).lean()
 
     if (!user) {
-        return res.json({ status: 'error', error: 'Invelid username/password' })
+        return res.json({ status: 'error', error: 'Invalid username/password' })
     }
-
-    if(estado)
 
     if (await bcrypt.compare(password, user.password)) {
         const token = jwt.sign({
