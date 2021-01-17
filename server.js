@@ -7,12 +7,16 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
 const morgan = require('morgan')
+const axios = require('axios')
+const moment = require('moment')
+moment.locale('es-do')
 
 const User = require('./models/user');
 const Citas = require('./models/cita');
 const Pacientes = require('./models/paciente')
 const UserMeeting = require('./models/usermeeting')
 const Calendar = require('./models/calendar')
+const LogMeeting = require('./models/logmeeting')
 
 const JWT_SECRET = 'ssafarq34aksbdfoib2o3ufoqwbqwrfo*)&(ˆ*&&ˆ**&ˆ*kjnskhfkjsfaisdf'
 
@@ -38,7 +42,7 @@ app.listen(3000, () => {
 
 // PETICIONES POST
 app.post('/api/register', async (req, res) => {
-    const { username, password: plainTextPassword, nombre, apellido, cedula, rol, estado } = req.body;
+    const { username, password: plainTextPassword, nombre, apellido, cedula, rol, estado, fechaDeRegistro } = req.body;
 
     let transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -51,7 +55,7 @@ app.post('/api/register', async (req, res) => {
         let mailOptions = {
             from: 'consultasomnihealth@gmail.com',
             to: username,
-            subject: 'Acceso API - OmniHealt',
+            subject: 'Bienvenido - OmniHealt',
             html: `
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -567,7 +571,8 @@ app.post('/api/register', async (req, res) => {
             apellido,
             cedula,
             rol,
-            estado
+            estado,
+            fechaDeRegistro
         })
         console.log('User created:', response)
     } catch (error) {
@@ -1163,7 +1168,7 @@ app.post('/api/login', async (req, res) => {
 
 
 app.post('/api/login-meeting', async (req, res) => {
-    const { username, password, sala } = req.body
+    const { username, password, sala, referencia } = req.body
 
     function makeid(length) {
         var result           = '';
@@ -1178,6 +1183,14 @@ app.post('/api/login-meeting', async (req, res) => {
     console.log(makeid(50))
 
     const user = await UserMeeting.findOne({ username }).lean()
+
+    axios
+        .post('http://localhost:3000/api/log_meeting', {
+            username: user.username,
+            fecha: moment(Date()).format('LLL'),
+            api: makeid(50),
+            referencia: referencia
+    })
 
     if (!user) {
         return res.json({ status: 'error', error: 'Invalid username/password' })
@@ -1194,9 +1207,6 @@ app.post('/api/login-meeting', async (req, res) => {
     }
 
     res.json({ status: 400, error: 'Usuario o Contraseña Incorrecto' })
-
-
-
 })
 
 
@@ -1222,6 +1232,31 @@ app.post('/api/calendar', async (req, res) => {
             message: err
         }),
         console.log('ERROR AL REGISTRAR CALENDARIO', err)
+    }
+})
+
+
+app.post('/api/log_meeting', async (req, res) => {
+    const { username, fecha, api, referencia } = req.body;
+
+    try {
+        const response = await LogMeeting.create({
+            username,
+            fecha,
+            api,
+            referencia
+        })
+
+        res.json({
+            status: 200,
+            response
+        })
+        console.log(response)
+    } catch (err) {
+        return res.json({
+            status: 400,
+            message: err
+        })
     }
 })
 
@@ -1818,6 +1853,12 @@ app.post('/api/cita/:_id', async (req, res) => {
 
 // PETICIONES GET
 
+
+app.get('/api/log_meeting', async (req, res) => {
+    const logmeeting = await LogMeeting.find({})
+    res.send(logmeeting)
+})
+
 app.get('/api/pacientes', async (req, res) => {
     // const paciente = await Pacientes.find( usercreation: req.params.user_creation).populate('citas')
     // res.send(paciente)
@@ -1852,7 +1893,7 @@ app.get('/api/:_id/cita', async (req, res) => {
 
 
 app.get('/api/users', async (req, res) => {
-    const users = await User.find({})
+    const users = await User.find(req.query)
     res.send(users)
 })
 

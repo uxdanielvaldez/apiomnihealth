@@ -38,6 +38,9 @@ const UserSchema = new mongoose.Schema({
     especialidad: {
         type: String
     },
+    fechaDeRegistro: {
+        type: String
+    },
     estado: {
         type: String
     },
