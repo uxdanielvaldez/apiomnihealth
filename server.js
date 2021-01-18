@@ -2560,3 +2560,73 @@ app.put('/api/user/:_id', async (req, res) => {
             })
     })
 })
+
+app.post('/api/forgot/:username', async (req, res) => {
+    var userData = req.params
+    const { email } = req.body
+    
+    User.count({ username: req.params.username }, async (err, count) => {
+        if (count > 0) {
+            const user = await User.find(userData)
+            var tokenData = jwt.sign({ userData }, 'shhhhhhh')
+            console.log('INTENTO DE RESETEO DE CONTRASENA', tokenData)
+            function makeid(length) {
+            var result           = '';
+            var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for ( var i = 0; i < length; i++ ) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+            }
+            var codigo = makeid(5)
+            res.status(200).json({ token: `${tokenData}`, User: user, codigoVerificacion: codigo })        
+            console.log(codigo)
+            
+        
+
+        let transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'consultasomnihealth@gmail.com',
+                pass: 'uLTRAml*z'
+            }
+        });
+            
+        let mailOptions = {
+            from: 'consultasomnihealth@gmail.com',
+            to: email,
+            subject: 'Cambio de Contraseña - OmniHealt',
+            text: `CODIGO TEMPORAL PARA RESETEO DE PASSWORD: ${codigo}`
+              
+        }
+            
+            
+        transporter.sendMail(mailOptions, function (err, data) {
+            if (err) {
+                console.log('ERROR AL ENVIAR CORREO', err)
+            }
+            else {
+                console.log('EMAIL SEND')
+            }
+        })
+        
+        } else {
+            console.log('No existe')
+            res.status(404).json({ message: "NO EXISTE EL USUARIO PROPORCIONADO" })
+        }
+    })
+})
+
+app.put('/api/resetpassword/:_id', async (req, res) => {
+    const { newpassword: plainTextPassword } = req.body
+    var userpassword = await bcrypt.hash(plainTextPassword, 10)
+    // res.send({password})
+    User.findByIdAndUpdate({ _id: req.params._id }, { password: userpassword} )
+        .then(function () {
+            User.findOne({ _id: req.params._id })
+                .then(function (user) {
+                res.send(user)
+            })
+    })
+})
