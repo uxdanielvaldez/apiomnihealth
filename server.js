@@ -1854,8 +1854,8 @@ app.post('/api/cita/:_id', async (req, res) => {
 // PETICIONES GET
 
 
-app.get('/api/log_meeting', async (req, res) => {
-    const logmeeting = await LogMeeting.find({})
+app.get('/api/log_meeting/:username', async (req, res) => {
+    const logmeeting = await LogMeeting.find(req.params)
     res.send(logmeeting)
 })
 
