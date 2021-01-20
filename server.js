@@ -1123,31 +1123,6 @@ app.post('/api/change-password', async (req, res) => {
 app.post('/api/login', async (req, res) => {
 
     const { username, password } = req.body
-
-        let transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'consultasomnihealth@gmail.com',
-                pass: 'uLTRAml*z'
-            }
-        });
-
-        let mailOptions = {
-            from: 'consultasomnihealth@gmail.com',
-            to: username,
-            subject: 'Inicio De Sesión - OmniHealt',
-            text: `Se ha realizado un inicio de sesión con tu cuenta en la fecha: ${new Date()}`
-        }
-
-        transporter.sendMail(mailOptions, function (err, data) {
-            if (err) {
-                console.log('ERROR AL ENVIAR CORREO', err)
-            }
-            else {
-                console.log('EMAIL SEND')
-            }
-        })
-
     const user = await User.findOne({ username }).lean()
 
     if (!user) {
@@ -1180,7 +1155,7 @@ app.post('/api/login-meeting', async (req, res) => {
         return result;
     }
     
-    console.log(makeid(50))
+    var idMeeting = makeid(10)
 
     const user = await UserMeeting.findOne({ username }).lean()
 
@@ -1188,7 +1163,7 @@ app.post('/api/login-meeting', async (req, res) => {
         .post('http://localhost:3000/api/log_meeting', {
             username: user.username,
             fecha: moment(Date()).format('LLL'),
-            api: makeid(50),
+            api: idMeeting,
             referencia: referencia
     })
 
@@ -1201,9 +1176,9 @@ app.post('/api/login-meeting', async (req, res) => {
             id: user._id,
             username: user.username,
             sala: user.sala,
-            meeting: 'https://consulta.omnihealth.com.do/'+makeid(50)
+            meeting: 'https://consulta.omnihealth.com.do/'+idMeeting
         }, JWT_SECRET)
-        return res.json({ status: 200, jwt: token, meeting: 'https://consulta.omnihealth.com.do/'+makeid(50) })
+        return res.json({ status: 200, jwt: token, meetingAdmin: 'https://consulta.omnihealth.com.do/'+idMeeting+'?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJteV9zZXJ2ZXIxIiwiaXNzIjoibXlfd2ViX2NsaWVudCIsInN1YiI6Im1lZXQuaml0c2kiLCJyb29tIjoiKiJ9.Br6Tkhu7gHJMCv3w3AFcKDD2dmudBLrXCKK96Ka0K9s', meetingGuest: 'https://consulta.omnihealth.com.do/'+idMeeting})
     }
 
     res.json({ status: 400, error: 'Usuario o Contraseña Incorrecto' })
